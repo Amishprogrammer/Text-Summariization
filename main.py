@@ -11,7 +11,7 @@ def home():
     if request.method == 'POST':
         fig = plt.figure()
         text = request.form.get('text')
-        stopWords = set(stopwords.words("english"))
+        stop_words = set(stopwords.words("english"))
          words = word_tokenize(text)
         num_sentences = 20
         # Create frequency table
