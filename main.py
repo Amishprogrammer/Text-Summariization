@@ -54,8 +54,8 @@ def home():
             axs[i].set_ylabel('Scores')
             axs[i].set_title(label)
             axs[i].grid(True)
-        plt.tight_layout()
-        return render_template('index.html', summary=summary, graph = fig)
+        plt.savefig('my_plot.png')  # Save the plot to a file
+        return render_template('index.html', summary=summary, graph = my_plot.png)
     return render_template('index.html')
 
 if __name__ == '__main__':
