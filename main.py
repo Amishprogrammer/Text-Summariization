@@ -2,6 +2,7 @@ from flask import Flask, request, render_template
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize
+import matplotlib.pyplot as plt
 
 app = Flask(__name__)
 
@@ -37,7 +38,7 @@ def home():
         summary_sentences = sorted(sentence_scores, key=sentence_scores.get, reverse=True)[:num_sentences]
         summary = ' '.join(summary_sentences)
 
-        rouge_scores = rouge.get_scores(param3, param1, avg = True)
+        rouge_scores = rouge.get_scores(summary, text, avg = True)
         labels = list(rouge_scores.keys())
         values = [rouge_scores[label]['f'] for label in labels]  # get f-score for each label
 
