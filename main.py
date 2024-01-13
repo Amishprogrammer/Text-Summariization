@@ -11,7 +11,7 @@ def home():
         text = request.form.get('text')
         stopWords = set(stopwords.words("english"))
          words = word_tokenize(text)
-        
+        num_sentences = 20
         # Create frequency table
         freq_table = dict()
         for word in words:
