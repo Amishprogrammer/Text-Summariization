@@ -9,6 +9,7 @@ app = Flask(__name__)
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
+        fig = plt.figure()
         text = request.form.get('text')
         stopWords = set(stopwords.words("english"))
          words = word_tokenize(text)
@@ -54,8 +55,7 @@ def home():
             axs[i].set_title(label)
             axs[i].grid(True)
         plt.tight_layout()
-        plt.show()
-        return render_template('index.html', summary=summary)
+        return render_template('index.html', summary=summary, graph = fig)
     return render_template('index.html')
 
 if __name__ == '__main__':
