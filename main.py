@@ -3,7 +3,7 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize
 import matplotlib.pyplot as plt
-
+from rouge import Rouge
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
