@@ -10,33 +10,35 @@ def home():
     if request.method == 'POST':
         text = request.form.get('text')
         stopWords = set(stopwords.words("english"))
-        words = word_tokenize(text)
-        freqTable = dict()
-        for word in words:
-            word = word.lower()
-            if word in stopWords:
-                continue
-            if word in freqTable:
-                freqTable[word] += 1
+         words = word_tokenize(text)
+    # Create frequency table
+    freq_table = dict()
+    for word in words:
+        word = word.lower()
+        if word not in stop_words:
+            if word in freq_table:
+                freq_table[word] += 1
             else:
-                freqTable[word] = 1
-        sentences = sent_tokenize(text)
-        sentenceValue = dict()
-        for sentence in sentences:
-            for word, freq in freqTable.items():
-                if word in sentence.lower():
-                    if sentence in sentenceValue:
-                        sentenceValue[sentence] += freq
-                    else:
-                        sentenceValue[sentence] = freq
-        sumValues = 0
-        for sentence in sentenceValue:
-            sumValues += sentenceValue[sentence]
-        average = int(sumValues / len(sentenceValue))
-        summary = ''
-        for sentence in sentences:
-            if (sentence in sentenceValue) and (sentenceValue[sentence] > (1.2 * average)):
-                summary += " " + sentence
+                freq_table[word] = 1
+                
+    # Score sentences
+    sentences = sent_tokenize(text)
+    if len(text)>500:
+        num_sentences = 20
+    else:
+        num_sentences = len(sentences)/2
+    sentence_scores = dict()
+    for sentence in sentences:
+        for word in nltk.word_tokenize(sentence.lower()):
+            if word in freq_table:
+                if sentence not in sentence_scores:
+                    sentence_scores[sentence] = freq_table[word]
+                else:
+                    sentence_scores[sentence] += freq_table[word]
+                    
+    # Get highest scoring sentences
+    summary_sentences = sorted(sentence_scores, key=sentence_scores.get, reverse=True)[:num_sentences]
+    summary = ' '.join(summary_sentences)
         return render_template('index.html', summary=summary)
     return render_template('index.html')
 
