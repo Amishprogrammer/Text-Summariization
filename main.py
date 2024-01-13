@@ -36,6 +36,24 @@ def home():
         # Get highest scoring sentences
         summary_sentences = sorted(sentence_scores, key=sentence_scores.get, reverse=True)[:num_sentences]
         summary = ' '.join(summary_sentences)
+
+        rouge_scores = rouge.get_scores(param3, param1, avg = True)
+        labels = list(rouge_scores.keys())
+        values = [rouge_scores[label]['f'] for label in labels]  # get f-score for each label
+
+
+        fig, axs = plt.subplots(3, figsize=(10, 15))
+
+        for i, label in enumerate(rouge_scores.keys()):
+            values = [rouge_scores[label][score_type] for score_type in rouge_scores[label].keys()]
+            score_types = list(rouge_scores[label].keys())
+            axs[i].scatter(score_types, values, color='blue')
+            axs[i].set_xlabel('Score Types')
+            axs[i].set_ylabel('Scores')
+            axs[i].set_title(label)
+            axs[i].grid(True)
+        plt.tight_layout()
+        plt.show()
         return render_template('index.html', summary=summary)
     return render_template('index.html')
 
