@@ -4,16 +4,20 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize
 import matplotlib.pyplot as plt
 from rouge import Rouge
+import matplotlib.image as mpimg
+
+
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
+        rouge = Rouge()
         fig = plt.figure()
         text = request.form.get('text')
         stop_words = set(stopwords.words("english"))
-         words = word_tokenize(text)
-        num_sentences = 20
+        words = word_tokenize(text)
+        num_sentences = 6
         # Create frequency table
         freq_table = dict()
         for word in words:
@@ -44,7 +48,7 @@ def home():
         values = [rouge_scores[label]['f'] for label in labels]  # get f-score for each label
 
 
-        fig, axs = plt.subplots(3, figsize=(10, 15))
+        fig1, axs = plt.subplots(3, figsize=(10, 15))
 
         for i, label in enumerate(rouge_scores.keys()):
             values = [rouge_scores[label][score_type] for score_type in rouge_scores[label].keys()]
@@ -54,8 +58,9 @@ def home():
             axs[i].set_ylabel('Scores')
             axs[i].set_title(label)
             axs[i].grid(True)
-        plt.savefig('my_plot.png')  # Save the plot to a file
-        return render_template('index.html', summary=summary, graph = my_plot.png)
+        plt.tight_layout()
+        plt.savefig('my_fig.png')
+        return render_template('index.html', rouge_1r = rouge_scores['rouge-1']['r'], rouge_1p = rouge_scores['rouge-1']['p'], rouge_1f = rouge_scores['rouge-1']['f'], rouge_2r = rouge_scores['rouge-2']['r'], rouge_2p = rouge_scores['rouge-2']['p'], rouge_2f= rouge_scores['rouge-2']['f'], rouge_lr = rouge_scores['rouge-l']['r'], rouge_lp = rouge_scores['rouge-l']['p'], rouge_lf= rouge_scores['rouge-l']['f'], summary=summary, graph = 'my_fig.png')
     return render_template('index.html')
 
 if __name__ == '__main__':
