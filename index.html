@@ -70,7 +70,21 @@
          <p>ROUGE-L r Score: {{ rouge_lr }}</p>
          <p>ROUGE-L p Score: {{ rouge_lp }}</p>
          <p>ROUGE-L f Score: {{ rouge_lf }}</p>
-         <p>Graph: <img src="{{ graph }}" alt="Chart" height="42" width="42"></p>
+         <p>Graph: <img src="{{ graph }}" alt="Chart" height="400" width="500"></p>
+         <br>
+         <p>Bleu Score: {{ bleu }}</p>
+
+         <h1>Upload a File</h1>
+         <form action="/upload" method="post" enctype="multipart/form-data">
+             <input type="file" name="file" accept=".pdf, .txt">
+             <input type="submit" value="Upload">
+         </form>
+         <!-- <p>Precisions Score: {{ precisions }}</p>
+         <p>Berevity Penalty Score: {{ brevity_penalty }}</p>
+         <br>
+         <p>Length Ratio Score: {{ length_ratio }}</p>
+         <p>Translation length: {{ translation_length }}</p>
+         <p>Reference Score: {{ reference_length }}</p> -->
      </div>
  </body>
  </html>
