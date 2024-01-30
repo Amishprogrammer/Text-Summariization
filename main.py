@@ -5,14 +5,17 @@ from nltk.tokenize import word_tokenize, sent_tokenize
 import matplotlib.pyplot as plt
 from rouge import Rouge
 from io import BytesIO
-import io
 import base64
 import sacrebleu
+import os
+from pdfminer.high_level import extract_text
 
 
 
 app = Flask(__name__)
+os.system("start \"\" http://127.0.0.1:5000")
 
+        
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
@@ -86,14 +89,61 @@ def home():
                                 rouge_lf= rouge_scores['rouge-l']['f'], 
                                 summary=summary, 
                                 graph = graph_url,
-                                bleu = bleu1
-                                # precisions = bleu_scores['precisions'],
-                                # brevity_penalty = bleu_scores['brevity_penalty'],
-                                # length_ratio = bleu_scores['length_ratio'],
-                                # translation_length = bleu_scores['translation_length'],
-                                # reference_length = bleu_scores['reference_length']
-                                )
+                                bleu = bleu1.score)
+
+    extracted_text = request.args.get('text', '')
+
+    return render_template('index.html', extracted_text=extracted_text)
+    #return render_template('index.html')
+
+@app.route('/upload', methods=['POST'])
+
+def upload_file():
+    if 'file' not in request.files:
+        return 'No file part'
+    
+    file = request.files['file']
+    
+    if file.filename == '':
+        return 'No selected file'
+    
+    # You can save the file to a specific directory or process it as needed.
+    # For example, saving the file in the 'uploads' directory:
+    file.save('uploads/' + file.filename)
+
+
+    ######################### to extract text from uploaded file
+    folder_path = 'uploads'
+    # recent_file = most_recent_file('uploads')
+    all_files = os.listdir(folder_path)
+
+    # Filter out directories (if any)
+    files = [file for file in all_files if os.path.isfile(os.path.join(folder_path, file))]
+
+    if not files:
+        return None  # No files in the folder
+
+    # Get the most recently modified file
+    recent_file = max(files, key=lambda f: os.path.getmtime(os.path.join(folder_path, f)))
+
+    if recent_file:
+        # print(f"The most recent file in the folder is: {recent_file}")
+        text = extract_text(os.path.join(folder_path, recent_file))
+        # print(text)
+        return render_template('index.html', extracted_text=text)
+        
+    else:
+        print("No files in the folder.")
+    
+    ########################
+    
     return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+
+
+
+
