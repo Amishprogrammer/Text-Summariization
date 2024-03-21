@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en"> 
 
@@ -97,6 +96,8 @@
       <h1>Enter your text here!</h1>
       <form method="POST" action="/">
           <textarea name="text" placeholder="Enter text to summarize">{{ extracted_text }}</textarea><br>
+          <label for="quantity">How many lines of summary you want:</label>
+          <input type="number" id="quantity" name="num_of_lines" min="1" value="6">
 
           <input type="submit" value="Summarize"><br><BR>
          
