@@ -13,10 +13,10 @@ from pdfminer.high_level import extract_text
 
 
 app = Flask(__name__)
+
+@app.route('/', methods=['GET', 'POST'])
 os.system("start \"\" http://127.0.0.1:5000")
 
-        
-@app.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
         rouge = Rouge()
@@ -24,7 +24,7 @@ def home():
         text = request.form.get('text')
         stop_words = set(stopwords.words("english"))
         words = word_tokenize(text)
-        num_sentences = 6
+        num_sentences = int(request.form.get('num_of_lines'))
         # Create frequency table
         freq_table = dict()
         for word in words:
@@ -37,6 +37,8 @@ def home():
                     
         # Score sentences
         sentences = sent_tokenize(text)
+        if num_sentences>len(sentences):
+            num_sentences = len(sentences)-1
         sentence_scores = dict()
         for sentence in sentences:
             for word in nltk.word_tokenize(sentence.lower()):
